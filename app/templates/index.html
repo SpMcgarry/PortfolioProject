@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sean McGarry - Portfolio</title>
+    <meta charset="UTF-8">
+    <title>Sean McGarry - Portfolio + AI Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; line-height: 1.6; }
+        h1, h2 { color: #333; }
+        #intro { margin-bottom: 2rem; }
+        #chat-container { margin-top: 2rem; }
+        #chat { border: 1px solid #ccc; padding: 1rem; height: 300px; overflow-y: scroll; background: #f9f9f9; }
+        input { width: 80%; padding: 0.5rem; margin-top: 0.5rem; }
+        button { padding: 0.5rem 1rem; margin-left: 0.5rem; cursor: pointer; }
+        .message { margin-bottom: 1rem; }
+        .user { font-weight: bold; color: #0066cc; }
+        .ai { color: #444; }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Sean McGarry’s Portfolio</h1>
-    <p>This site will showcase my professional profile, projects, and AI blog.</p>
+    <!-- Portfolio intro -->
+    <div id="intro">
+        <h1>Welcome to Sean McGarry’s Portfolio</h1>
+        <p>This site showcases my professional profile, projects, and AI blog.</p>
+    </div>
+
+    <!-- AI chat section -->
+    <div id="chat-container">
+        <h2>PortfolioAI Chat</h2>
+        <div id="chat"></div>
+        <input id="message" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("message");
+            const message = input.value.trim();
+            if (!message) return;
+
+            input.value = "";
+            const chat = document.getElementById("chat");
+            chat.innerHTML += `<div class="message user">You: ${message}</div>`;
+
+            try {
+                const res = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+                chat.innerHTML += `<div class="message ai">AI: ${data.response}</div>`;
+            } catch (err) {
+                chat.innerHTML += `<div class="message ai">⚠️ Error: Unable to reach AI backend.</div>`;
+            }
+
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
 </body>
 </html>
