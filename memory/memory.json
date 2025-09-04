@@ -1,0 +1,3 @@
+add_memory(entry)
+get_memory(query)
+update_memory(entry_id, updates)

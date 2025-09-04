@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Agent Chat</title>
+</head>
+<body>
+<h1>Chat with your Agent</h1>
+<form id="chatForm">
+    <input type="text" name="user_input" id="user_input">
+    <button type="submit">Send</button>
+</form>
+
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="file">
+    <button type="submit">Upload</button>
+</form>
+
+<div id="chatBox"></div>
+
+<script>
+document.getElementById('chatForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('user_input').value;
+    const res = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'user_input=' + encodeURIComponent(input)
+    });
+    const data = await res.json();
+    document.getElementById('chatBox').innerHTML += `<p><b>You:</b> ${input}</p>`;
+    document.getElementById('chatBox').innerHTML += `<p><b>Agent:</b> ${data.response}</p>`;
+}
+
+document.getElementById('uploadForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById('file');
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+    const res = await fetch('/upload', {method: 'POST', body: formData});
+    const data = await res.json();
+    alert(data.message);
+}
+</script>
+</body>
+</html>
